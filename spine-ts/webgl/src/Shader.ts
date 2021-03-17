@@ -249,11 +249,24 @@ module spine.webgl {
 				varying LOWP vec4 v_dark;
 				varying vec2 v_texCoords;
 				uniform sampler2D u_texture;
+				uniform sampler2D u_palette;
+				uniform float paletteEnable;
 
 				void main () {
 					vec4 texColor = texture2D(u_texture, v_texCoords);
-					gl_FragColor.a = texColor.a * v_light.a;
-					gl_FragColor.rgb = ((texColor.a - 1.0) * v_dark.a + 1.0 - texColor.rgb) * v_dark.rgb + texColor.rgb * v_light.rgb;
+					// if (texColor.a == 0.0 || paletteEnable != 1.0)
+					if (v_light.a >= 0.0)
+					{
+						gl_FragColor.a = texColor.a * v_light.a;
+						gl_FragColor.rgb = ((texColor.a - 1.0) * v_dark.a + 1.0 - texColor.rgb) * v_dark.rgb + texColor.rgb * v_light.rgb;
+					} else
+					{
+						float index = ((texColor.r * 31.0)+0.5)/32.0;
+						float paletteNumber = ((v_light.b * 63.0)+0.5)/64.0;
+						// paletteColor
+						gl_FragColor = texture2D(u_palette, vec2(index,paletteNumber)) * texColor.a;
+						// gl_FragColor = texture2D(u_palette, vec2(index,0));
+					}
 				}
 			`;
 

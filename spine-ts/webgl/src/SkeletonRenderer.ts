@@ -56,7 +56,7 @@ module spine.webgl {
 			this.vertices = Utils.newFloatArray(this.vertexSize * 1024);
 		}
 
-		draw (batcher: PolygonBatcher, skeleton: Skeleton, slotRangeStart: number = -1, slotRangeEnd: number = -1) {
+		draw (batcher: PolygonBatcher, skeleton: Skeleton, slotRangeStart: number = -1, slotRangeEnd: number = -1, palette: object) {
 			let clipper = this.clipper;
 			let premultipliedAlpha = this.premultipliedAlpha;
 			let twoColorTint = this.twoColorTint;
@@ -79,6 +79,19 @@ module spine.webgl {
 			for (let i = 0, n = drawOrder.length; i < n; i++) {
 				let clippedVertexSize = clipper.isClipping() ? 2 : vertexSize;
 				let slot = drawOrder[i];
+
+				let paletteIndex = 0;
+				// @ts-ignore
+				if (palette.enable)
+				{
+					// @ts-ignore
+					if (palette.slotPalette.hasOwnProperty(slot.data.name))
+					{
+						// @ts-ignore
+						paletteIndex = palette.slotPalette[slot.data.name]/palette.paletteNumber;
+					}
+				}
+
 				if (!slot.bone.active) {
 					clipper.clipEndWithSlot(slot);
 					continue;
@@ -96,6 +109,8 @@ module spine.webgl {
 				if (slotRangeEnd >= 0 && slotRangeEnd == slot.data.index) {
 					inRange = false;
 				}
+
+				let slotName = slot.data.name;
 
 				let attachment = slot.getAttachment();
 				let texture: GLTexture = null;
@@ -272,8 +287,16 @@ module spine.webgl {
 								for (let v = 2, u = 0, n = renderable.numFloats; v < n; v += vertexSize, u += 2) {
 									verts[v] = finalColor.r;
 									verts[v + 1] = finalColor.g;
-									verts[v + 2] = finalColor.b;
-									verts[v + 3] = finalColor.a;
+									// @ts-ignore
+									if (palette.enable)
+									{
+										verts[v + 2] = paletteIndex;
+										verts[v + 3] = -1.0;									
+									} else
+									{
+										verts[v + 2] = finalColor.b;
+										verts[v + 3] = finalColor.a;
+									}
 									verts[v + 4] = uvs[u];
 									verts[v + 5] = uvs[u + 1];
 									verts[v + 6] = darkColor.r;

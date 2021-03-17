@@ -70,7 +70,7 @@ module spine.webgl {
 		drawSkeleton (skeleton: Skeleton, premultipliedAlpha = false, slotRangeStart = -1, slotRangeEnd = -1) {
 			this.enableRenderer(this.batcher);
 			this.skeletonRenderer.premultipliedAlpha = premultipliedAlpha;
-			this.skeletonRenderer.draw(this.batcher, skeleton, slotRangeStart, slotRangeEnd);
+			this.skeletonRenderer.draw(this.batcher, skeleton, slotRangeStart, slotRangeEnd, {});
 		}
 
 		drawSkeletonDebug(skeleton: Skeleton, premultipliedAlpha = false, ignoredBones: Array<string> = null) {
