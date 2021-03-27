@@ -261,7 +261,7 @@ module spine.webgl {
 					} else
 					{
 						// float index = ((texColor.r * 31.0)+0.5)/32.0;
-						mediump float index = texColor.r;
+						mediump float index = texColor.r + v_light.g;
 						mediump float paletteNumber = ((v_light.b * 63.0)+0.5)/64.0;
 						// paletteColor
 						gl_FragColor = texture2D(u_palette, vec2(index,paletteNumber));

@@ -81,6 +81,7 @@ module spine.webgl {
 				let slot = drawOrder[i];
 
 				let paletteIndex = 0;
+				let paletteOffset = 0;
 				// @ts-ignore
 				if (palette.enable)
 				{
@@ -89,6 +90,12 @@ module spine.webgl {
 					{
 						// @ts-ignore
 						paletteIndex = palette.slotPalette[slot.data.name]/palette.paletteNumber;
+					}
+					// @ts-ignore
+					if (palette.slotPaletteOffset.hasOwnProperty(slot.data.name))
+					{
+						// @ts-ignore
+						paletteOffset = palette.slotPaletteOffset[slot.data.name]/palette.indexSize;
 					}
 				}
 
@@ -290,6 +297,7 @@ module spine.webgl {
 									// @ts-ignore
 									if (palette.enable)
 									{
+										verts[v + 1] = paletteOffset;
 										verts[v + 2] = paletteIndex;
 										verts[v + 3] = -1.0;									
 									} else
